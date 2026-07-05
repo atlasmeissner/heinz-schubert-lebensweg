@@ -53,8 +53,8 @@
   <div class="leg" id="legend"></div>
   <div class="views" id="views">
     <button data-v="all">Gesamt</button>
-    <button data-v="flucht">Flucht 1945/46</button>
-    <button data-v="west">Westdeutschland</button>
+    <button data-v="j1945">1945: Breslau–Rudig und zurück</button>
+    <button data-v="j1946">1946: Breslau–Holsen</button>
     <button data-v="flug">Flug 1959</button>
     <button data-v="jhb">Johannesburg</button>
   </div>
@@ -162,7 +162,7 @@ routes.forEach((r, i) => {
 });
 
 // View buttons
-const viewSel = { all:null, flucht:[0,1,2], west:[3], flug:[4], jhb:[5] };
+const viewSel = { all:null, j1945:[0,1], j1946:[2,3], flug:[4], jhb:[5] };
 function setBtn(v) {
   document.querySelectorAll('#views button').forEach(b => b.classList.toggle('active', b.dataset.v === v));
 }
