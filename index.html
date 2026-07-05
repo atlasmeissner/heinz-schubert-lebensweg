@@ -72,27 +72,27 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 // [name, lat, lon, years, description]
 const P = {
-  breslau:      ['Breslau, Gräbschener Straße 58', 51.101, 16.988, '1936–1945', 'Geburt am 31. August 1936. Das Eckhaus mit dem „Fahrradhaus Presto-Räder“ des Vaters — hier beginnt alles.'],
+  breslau:      ['Breslau, Gräbschener Straße 58', 51.0995, 17.0130, '1936–1945', 'Geburt am 31. August 1936. Das Eckhaus mit dem „Fahrradhaus Presto-Räder“ des Vaters — hier beginnt alles. (Heute ul. Grabiszyńska; Hausnummer ungefähr verortet)'],
   hirschberg:   ['Hirschberg (Jelenia Góra)', 50.904, 15.735, '14. Januar 1945', 'Flucht mit dem Zug ins Riesengebirge, wenige Tage bevor der Räumungsbefehl für Breslau kommt.'],
-  mauer:        ['Mauer an der Bober', 51.02, 15.67, 'Januar 1945', 'Quartier bei einem Nazi; Tag und Nacht ziehen Leiterwagen der Flüchtlinge vorbei. (Lage ungefähr)'],
+  mauer:        ['Mauer an der Bober (heute Pilchowice)', 51.001, 15.653, 'Januar 1945', 'Quartier bei einem Nazi; Tag und Nacht ziehen Leiterwagen der Flüchtlinge vorbei. Das Dorf an der Bobertalsperre heißt heute Pilchowice.'],
   podersam:     ['Podersam (Podbořany)', 50.229, 13.412, 'Ende Januar 1945', 'Weiterfahrt auf offenen Panzerwaggons durch eine bitterkalte Nacht.'],
   rudig:        ['Rudig (Vroutek), Böhmen', 50.179, 13.380, 'Jan.–Mai 1945', 'Zwischen Hopfenfeldern erlebt die Familie hier das Kriegsende am 8. Mai 1945.'],
-  breslau2:     ['Breslau, Webskystraße', 51.096, 17.015, 'Juni 1945–Mai 1946', 'Rückkehr in die zerstörte Stadt: ab 22. Mai 1945, drei Wochen zu Fuß. Ein Jahr im polnisch gewordenen Breslau; Geburt der Andel.'],
+  breslau2:     ['Breslau, Webskystraße (heute ul. Zgodna)', 51.0995, 17.053, 'Juni 1945–Mai 1946', 'Rückkehr in die zerstörte Stadt: ab 22. Mai 1945, drei Wochen zu Fuß. Ein Jahr im polnisch gewordenen Breslau; Geburt der Andel.'],
   helmstedt:    ['Grenze Helmstedt', 52.228, 11.010, 'Mai/Juni 1946', 'Im Viehwaggon vom Freiburger Bahnhof in Breslau nach Westen; Grenzübertritt und Lager.'],
-  holzhausen:   ['Holzhausen (Ostwestfalen)', 52.278, 8.635, '1946–1951', 'Lehnstich, dann „im Bruch“ bei Dreier. Hunger, Schule, Konfirmation — Neuanfang aus dem Nichts.'],
+  holzhausen:   ['Holzhausen an der Porta', 52.2281, 8.9039, '1946–1951', 'Erst oben am Lehnstich (dem höchsten Punkt), dann „im Bruch“ bei Dreier. Hunger, Schule, Konfirmation — Neuanfang aus dem Nichts. Heute ein Ortsteil von Porta Westfalica.'],
   buende:       ['Bünde', 52.199, 8.586, '1951–1958', 'Maurerlehre in der Zigarrenstadt: neun Richtfeste im ersten Lehrjahr. Hier beginnt der Weg zum Bauunternehmer — und die Geschichte mit Lotte.'],
-  holsen:       ['Holsen', 52.262, 8.670, '1950er', 'Umzug nach Holsen in den jungen Jahren. (Lage ungefähr)'],
+  holsen:       ['Holsen (Bünde)', 52.2106, 8.5048, 'ab 1951', 'Lehrling bei der Firma Raakop in Holsen; Umzug hierher in den jungen Jahren.'],
   duesseldorf:  ['Düsseldorf, Flughafen', 51.287, 6.767, '6./7. Oktober 1959', 'Abflug ins Ungewisse: eine kleine Propellermaschine, vier Tage Reise.'],
-  lyon:         ['Lyon', 45.726, 5.081, 'Okt. 1959', 'Erste Etappe — nur zum Tanken.'],
+  lyon:         ['Lyon-Bron', 45.727, 4.944, 'Okt. 1959', 'Erste Etappe — nur zum Tanken.'],
   rom:          ['Rom', 41.799, 12.595, 'Okt. 1959', 'Weiter nach Rom.'],
   malta:        ['La Valletta, Malta', 35.857, 14.477, 'Okt. 1959', 'Übernachtung auf der Insel.'],
   benghazi:     ['Benghazi, Libyen', 32.097, 20.270, 'Okt. 1959', 'Umstieg in die viermotorige DC-4, ein Überbleibsel aus dem Krieg.'],
   kairo:        ['Kairo', 30.112, 31.400, 'Okt. 1959', 'Laut und chaotisch; Schuhputzer rufen „Heil Hitler!“. Pyramiden und Sphinx bleiben unerreicht.'],
   entebbe:      ['Entebbe, Uganda', 0.042, 32.443, 'Okt. 1959', 'Wegen Unruhen in Khartum direkt an den Victoriasee. Giraffen vom Flugzeug aus.'],
-  jhb:          ['Johannesburg — Monte Carlo Hotel', -26.201, 28.048, '10. Oktober 1959', 'Ankunft am Kruger Day. Die Furchs holen sie ab; zwei, drei Tage im Hotel Ecke Von Wielligh/Bree Street.'],
-  ridgway:      ['Ridgway Court, End Street', -26.196, 28.055, '1959/60', 'Erste eigene Wohnung, mit Hilfe der Furchs gefunden.'],
-  romney:       ['Romney Court', -26.192, 28.052, '1960–1967', 'Gegenüber dem Sunninghill. Hier wohnt die Familie, als Christine (14.4.1960) zur Welt kommt — geboren im Entbindungsheim Marymount, wie alle Töchter. (Lage ungefähr)'],
-  northcliff:   ['Northcliff, Elm Street', -26.145, 27.965, 'ab Weihnachten 1967', 'Das selbstgebaute Haus: Grundstück im Feld, die Straße hörte einfach auf. Familie, Feste, ein halbes Jahrhundert Zuhause.']
+  jhb:          ['Johannesburg — Monte Carlo Hotel', -26.2010, 28.0506, '10. Oktober 1959', 'Ankunft am Kruger Day. Die Furchs holen sie ab; zwei, drei Tage im Hotel Ecke Von Wielligh/Bree Street.'],
+  ridgway:      ['Ridgway Court, End Street', -26.1980, 28.0575, '1959/60', 'Erste eigene Wohnung, mit Hilfe der Furchs gefunden.'],
+  romney:       ['Romney Court', -26.194, 28.054, '1960–1967', 'Gegenüber dem Sunninghill. Hier wohnt die Familie, als Christine (14.4.1960) zur Welt kommt — geboren im Entbindungsheim Marymount, wie alle Töchter. (Lage ungefähr)'],
+  northcliff:   ['Northcliff, Elm Street', -26.138, 27.952, 'ab Weihnachten 1967', 'Das selbstgebaute Haus: Grundstück im Feld, die Straße hörte einfach auf. Familie, Feste, ein halbes Jahrhundert Zuhause. (Straße liegt in Northcliff Ext 6; genaue Stelle bitte noch bestätigen)']
 };
 
 const routes = [
