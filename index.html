@@ -16,17 +16,19 @@
   .panel h1 { font-size:17px; margin:0 0 2px; }
   .panel .sub { font-size:12.5px; color:#555; margin-bottom:10px; font-style:italic; }
   .leg { font-size:13px; line-height:1.45; }
-  .leg .row { display:flex; align-items:center; gap:8px; margin:3px 0; cursor:pointer; }
-  .leg .row:hover { background:#f2ede3; border-radius:4px; }
+  .leg .row { display:flex; align-items:center; gap:8px; margin:3px 0; cursor:pointer; padding:2px 4px; border-radius:4px; }
+  .leg .row:hover { background:#f2ede3; }
+  .leg .row.active { background:#ece3cf; }
+  .leg .row.dimmed { opacity:.45; }
   .swatch { width:26px; height:0; border-top-width:3px; border-top-style:solid; flex:0 0 26px; }
   .dash { border-top-style:dashed; }
-  .dot { width:10px; height:10px; border-radius:50%; background:#4a3f30; flex:0 0 10px; margin-left:8px; }
   .views { margin-top:10px; display:flex; flex-wrap:wrap; gap:6px; }
   .views button {
     font-family:inherit; font-size:12px; padding:4px 9px; border:1px solid #b5a98f;
     background:#f7f3ea; border-radius:6px; cursor:pointer;
   }
-  .views button:hover { background:#eve3d2; background:#efe6d4; }
+  .views button:hover { background:#efe6d4; }
+  .views button.active { background:#e3d5b8; border-color:#8a7a58; }
   .popup h3 { margin:0 0 4px; font-size:14px; }
   .popup .yr { color:#8a6d3b; font-weight:bold; }
   .popup p { margin:4px 0 0; font-size:12.5px; line-height:1.4; }
@@ -49,14 +51,14 @@
   <h1>Heinz Schubert — Lebensweg</h1>
   <div class="sub">Breslau 1936 &rarr; Johannesburg, ein Leben in Stationen</div>
   <div class="leg" id="legend"></div>
-  <div class="views">
+  <div class="views" id="views">
     <button data-v="all">Gesamt</button>
-    <button data-v="schlesien">Flucht 1945/46</button>
+    <button data-v="flucht">Flucht 1945/46</button>
     <button data-v="west">Westdeutschland</button>
     <button data-v="flug">Flug 1959</button>
     <button data-v="jhb">Johannesburg</button>
   </div>
-  <div class="note">Auf Orte und Linien klicken f&uuml;r Details. Ortslagen teils ungef&auml;hr (historische Ortsnamen).</div>
+  <div class="note">Auswahl in der Legende zeigt nur diese Etappe. Auf Orte klicken f&uuml;r Details; einzelne Ortslagen ungef&auml;hr.</div>
 </div>
 <script>
 if (typeof L === 'undefined') {
@@ -89,10 +91,10 @@ const P = {
   benghazi:     ['Benghazi, Libyen', 32.097, 20.270, 'Okt. 1959', 'Umstieg in die viermotorige DC-4, ein Überbleibsel aus dem Krieg.'],
   kairo:        ['Kairo', 30.112, 31.400, 'Okt. 1959', 'Laut und chaotisch; Schuhputzer rufen „Heil Hitler!“. Pyramiden und Sphinx bleiben unerreicht.'],
   entebbe:      ['Entebbe, Uganda', 0.042, 32.443, 'Okt. 1959', 'Wegen Unruhen in Khartum direkt an den Victoriasee. Giraffen vom Flugzeug aus.'],
-  jhb:          ['Johannesburg — Monte Carlo Hotel', -26.2010, 28.0506, '10. Oktober 1959', 'Ankunft am Kruger Day. Die Furchs holen sie ab; zwei, drei Tage im Hotel Ecke Von Wielligh/Bree Street.'],
-  ridgway:      ['Ridgway Court, End Street', -26.1980, 28.0575, '1959/60', 'Erste eigene Wohnung, mit Hilfe der Furchs gefunden.'],
-  romney:       ['Romney Court', -26.194, 28.054, '1960–1967', 'Gegenüber dem Sunninghill. Hier wohnt die Familie, als Christine (14.4.1960) zur Welt kommt — geboren im Entbindungsheim Marymount, wie alle Töchter. (Lage ungefähr)'],
-  northcliff:   ['Northcliff, Elm Street', -26.138, 27.952, 'ab Weihnachten 1967', 'Das selbstgebaute Haus: Grundstück im Feld, die Straße hörte einfach auf. Familie, Feste, ein halbes Jahrhundert Zuhause. (Straße liegt in Northcliff Ext 6; genaue Stelle bitte noch bestätigen)']
+  jhb:          ['Johannesburg — Monte Carlo Hotel', -26.2013, 28.0510, '10. Oktober 1959', 'Ankunft am Kruger Day. Die Furchs holen sie ab; zwei, drei Tage im Hotel an der Von Wielligh Street, Ecke Bree Street.'],
+  ridgway:      ['Ridgway Court, End Street', -26.1990, 28.0578, '1959/60', 'Erste eigene Wohnung, mit Hilfe der Furchs gefunden. (Lage in der End Street, Hausnummer unbekannt)'],
+  romney:       ['Romney Court', -26.1955, 28.0560, '1960–1967', 'Gegenüber dem Sunninghill. Hier wohnt die Familie, als Christine (14.4.1960) zur Welt kommt — geboren im Entbindungsheim Marymount, wie alle Töchter. (Lage ungefähr)'],
+  northcliff:   ['Northcliff, Elm Street', -26.1410, 27.9650, 'ab Weihnachten 1967', 'Das selbstgebaute Haus: Grundstück im Feld, die Straße hörte einfach auf. Familie, Feste, ein halbes Jahrhundert Zuhause. (Genaue Stelle in der Elm Street bitte bestätigen)']
 };
 
 const routes = [
@@ -110,46 +112,67 @@ const routes = [
     pts:['jhb','ridgway','romney','northcliff'] }
 ];
 
-const layers = {};
-routes.forEach(r => {
-  const line = L.polyline(r.pts.map(k => [P[k][1], P[k][2]]), {
+// Build layers
+const lines = routes.map(r =>
+  L.polyline(r.pts.map(k => [P[k][1], P[k][2]]), {
     color:r.color, weight:3.5, opacity:.85, dashArray:r.dash
-  }).addTo(map).bindPopup('<div class="popup"><h3>'+r.name+'</h3></div>');
-  layers[r.name] = line;
+  }).bindPopup('<div class="popup"><h3>'+r.name+'</h3></div>')
+);
+const pointRoutes = {};          // point key -> [route indices]
+routes.forEach((r, i) => r.pts.forEach(k => {
+  (pointRoutes[k] = pointRoutes[k] || []).push(i);
+}));
+const markers = {};
+Object.entries(P).forEach(([key, [name, lat, lon, yr, desc]]) => {
+  markers[key] = L.circleMarker([lat, lon], {
+    radius:6, color:'#3b2f21', weight:2, fillColor:'#f5e8c8', fillOpacity:1
+  }).bindPopup('<div class="popup"><h3>'+name+'</h3><span class="yr">'+yr+'</span><p>'+desc+'</p></div>');
 });
 
-Object.values(P).forEach(([name, lat, lon, yr, desc]) => {
-  L.circleMarker([lat, lon], { radius:6, color:'#3b2f21', weight:2, fillColor:'#f5e8c8', fillOpacity:1 })
-    .addTo(map)
-    .bindPopup('<div class="popup"><h3>'+name+'</h3><span class="yr">'+yr+'</span><p>'+desc+'</p></div>');
-});
+// Show only the given route indices (null = all)
+let activeSel = null;
+function show(sel, fit) {
+  activeSel = sel;
+  const vis = i => !sel || sel.includes(i);
+  lines.forEach((ln, i) => { if (vis(i)) ln.addTo(map); else map.removeLayer(ln); });
+  Object.entries(markers).forEach(([k, m]) => {
+    if (pointRoutes[k].some(vis)) m.addTo(map); else map.removeLayer(m);
+  });
+  document.querySelectorAll('#legend .row').forEach((row, i) => {
+    row.classList.toggle('active', !!sel && sel.length === 1 && sel[0] === i);
+    row.classList.toggle('dimmed', !!sel && !sel.includes(i));
+  });
+  if (fit) {
+    const group = L.featureGroup(lines.filter((_, i) => vis(i)));
+    map.fitBounds(group.getBounds().pad(.25));
+  }
+}
 
-// Legend
+// Legend: click a row = show only that stage; click again = back to all
 const leg = document.getElementById('legend');
-routes.forEach(r => {
+routes.forEach((r, i) => {
   const row = document.createElement('div');
   row.className = 'row';
   row.innerHTML = '<span class="swatch'+(r.dash?' dash':'')+'" style="border-top-color:'+r.color+'"></span><span>'+r.name+'</span>';
-  row.onclick = () => map.fitBounds(layers[r.name].getBounds().pad(.35));
+  row.onclick = () => {
+    if (activeSel && activeSel.length === 1 && activeSel[0] === i) { show(null, true); setBtn('all'); }
+    else { show([i], true); setBtn(null); }
+  };
   leg.appendChild(row);
 });
-const stRow = document.createElement('div');
-stRow.className = 'row';
-stRow.innerHTML = '<span class="dot"></span><span>Station (anklicken für Details)</span>';
-leg.appendChild(stRow);
 
-// Views
-const views = {
-  all:       [[ -30, -5 ], [ 54, 36 ]],
-  schlesien: [[ 49.7, 12.8 ], [ 51.6, 17.6 ]],
-  west:      [[ 51.9, 8.2 ], [ 52.5, 11.3 ]],
-  flug:      [[ -28, 3 ], [ 52.5, 34 ]],
-  jhb:       [[ -26.24, 27.90 ], [ -26.10, 28.12 ]]
-};
-document.querySelectorAll('.views button').forEach(b => {
-  b.onclick = () => map.fitBounds(views[b.dataset.v]);
+// View buttons
+const viewSel = { all:null, flucht:[0,1,2], west:[3], flug:[4], jhb:[5] };
+function setBtn(v) {
+  document.querySelectorAll('#views button').forEach(b => b.classList.toggle('active', b.dataset.v === v));
+}
+document.querySelectorAll('#views button').forEach(b => {
+  b.onclick = () => { show(viewSel[b.dataset.v], true); setBtn(b.dataset.v); };
 });
-map.fitBounds(views.all);
+
+show(null, false);
+setBtn('all');
+map.fitBounds([[-30, -5], [54, 36]]);
 </script>
 </body>
 </html>
