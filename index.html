@@ -58,7 +58,7 @@
     <button data-v="flug">Flug 1959</button>
     <button data-v="jhb">Johannesburg</button>
   </div>
-  <div class="note">Auswahl in der Legende zeigt nur diese Etappe. Auf Orte klicken f&uuml;r Details; einzelne Ortslagen ungef&auml;hr.</div>
+  <div class="note">Auswahl in der Legende zeigt nur diese Etappe. Auf Orte und Linien klicken f&uuml;r Details; Entfernungen sind Luftlinie, einzelne Ortslagen ungef&auml;hr.</div>
 </div>
 <script>
 if (typeof L === 'undefined') {
@@ -112,12 +112,32 @@ const routes = [
     pts:['jhb','ridgway','romney','northcliff'] }
 ];
 
+// Distances (Luftlinie)
+const fmtKm = m => {
+  const km = m / 1000;
+  return (km >= 100 ? Math.round(km / 10) * 10 : Math.round(km)).toLocaleString('de-DE') + ' km';
+};
+routes.forEach(r => {
+  r.segs = [];
+  r.dist = 0;
+  for (let i = 1; i < r.pts.length; i++) {
+    const a = P[r.pts[i-1]], b = P[r.pts[i]];
+    const d = L.latLng(a[1], a[2]).distanceTo(L.latLng(b[1], b[2]));
+    r.dist += d;
+    r.segs.push([a[0].split(',')[0].split(' (')[0], b[0].split(',')[0].split(' (')[0], d]);
+  }
+});
+
 // Build layers
-const lines = routes.map(r =>
-  L.polyline(r.pts.map(k => [P[k][1], P[k][2]]), {
+const lines = routes.map(r => {
+  const segHtml = r.segs.map(([a, b, d]) =>
+    '<tr><td>'+a+' &rarr; '+b+'</td><td style="text-align:right; padding-left:10px;">'+fmtKm(d)+'</td></tr>').join('');
+  return L.polyline(r.pts.map(k => [P[k][1], P[k][2]]), {
     color:r.color, weight:3.5, opacity:.85, dashArray:r.dash
-  }).bindPopup('<div class="popup"><h3>'+r.name+'</h3></div>')
-);
+  }).bindPopup('<div class="popup"><h3>'+r.name+'</h3>'+
+    '<span class="yr">&approx; '+fmtKm(r.dist)+' Luftlinie</span>'+
+    '<table style="font-size:12px; margin-top:6px; border-collapse:collapse;">'+segHtml+'</table></div>');
+});
 const pointRoutes = {};          // point key -> [route indices]
 routes.forEach((r, i) => r.pts.forEach(k => {
   (pointRoutes[k] = pointRoutes[k] || []).push(i);
@@ -153,7 +173,7 @@ const leg = document.getElementById('legend');
 routes.forEach((r, i) => {
   const row = document.createElement('div');
   row.className = 'row';
-  row.innerHTML = '<span class="swatch'+(r.dash?' dash':'')+'" style="border-top-color:'+r.color+'"></span><span>'+r.name+'</span>';
+  row.innerHTML = '<span class="swatch'+(r.dash?' dash':'')+'" style="border-top-color:'+r.color+'"></span><span>'+r.name+' <span style="color:#8a6d3b; white-space:nowrap;">&middot; &approx;'+fmtKm(r.dist)+'</span></span>';
   row.onclick = () => {
     if (activeSel && activeSel.length === 1 && activeSel[0] === i) { show(null, true); setBtn('all'); }
     else { show([i], true); setBtn(null); }
