@@ -55,6 +55,7 @@
     <button data-v="all">Gesamt</button>
     <button data-v="j1945">1945: Breslau–Rudig und zurück</button>
     <button data-v="j1946">1946: Breslau–Holsen</button>
+    <button data-v="westfalen">Holsen–Häver–Bünde</button>
     <button data-v="flug">Flug 1959</button>
     <button data-v="jhb">Johannesburg</button>
   </div>
@@ -183,7 +184,7 @@ routes.forEach((r, i) => {
 });
 
 // View buttons
-const viewSel = { all:null, j1945:[0,1], j1946:[2,3], flug:[4], jhb:[5] };
+const viewSel = { all:null, j1945:[0,1], j1946:[2], westfalen:[3], flug:[4], jhb:[5] };
 function setBtn(v) {
   document.querySelectorAll('#views button').forEach(b => b.classList.toggle('active', b.dataset.v === v));
 }
